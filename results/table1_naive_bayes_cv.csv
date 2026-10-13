@@ -1,0 +1,6 @@
+Threshold_Days,Threshold_Label,High_Risk_Count,Low_Risk_Count,Balanced_Accuracy,Fold_Std
+240,240 days,18,62,0.64,0.172
+270,270 days,24,56,0.74,0.105
+300,300 days,24,56,0.74,0.105
+330,330 days,25,55,0.74,0.142
+360,360 days,26,54,0.72,0.166

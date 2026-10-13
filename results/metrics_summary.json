@@ -1,0 +1,74 @@
+{
+  "n_patients_original": 80,
+  "n_patients_augmented": 112,
+  "n_synthetic_added": 32,
+  "n_clinical_features": 12,
+  "n_radiomic_total": 900,
+  "n_radiomic_removed": 410,
+  "n_radiomic_retained": 490,
+  "optimal_nb_threshold_days": 270,
+  "table1_naive_bayes": [
+    {
+      "Threshold_Days": 240,
+      "Threshold_Label": "240 days",
+      "High_Risk_Count": 18,
+      "Low_Risk_Count": 62,
+      "Balanced_Accuracy": 0.64,
+      "Fold_Std": 0.172
+    },
+    {
+      "Threshold_Days": 270,
+      "Threshold_Label": "270 days",
+      "High_Risk_Count": 24,
+      "Low_Risk_Count": 56,
+      "Balanced_Accuracy": 0.74,
+      "Fold_Std": 0.105
+    },
+    {
+      "Threshold_Days": 300,
+      "Threshold_Label": "300 days",
+      "High_Risk_Count": 24,
+      "Low_Risk_Count": 56,
+      "Balanced_Accuracy": 0.74,
+      "Fold_Std": 0.105
+    },
+    {
+      "Threshold_Days": 330,
+      "Threshold_Label": "330 days",
+      "High_Risk_Count": 25,
+      "Low_Risk_Count": 55,
+      "Balanced_Accuracy": 0.74,
+      "Fold_Std": 0.142
+    },
+    {
+      "Threshold_Days": 360,
+      "Threshold_Label": "360 days",
+      "High_Risk_Count": 26,
+      "Low_Risk_Count": 54,
+      "Balanced_Accuracy": 0.72,
+      "Fold_Std": 0.166
+    }
+  ],
+  "table2_cox_models": [
+    {
+      "Dataset": "Clinical Features",
+      "Number_of_Features": 12,
+      "Concordance_Index": 0.74,
+      "CV_Std": 0.101
+    },
+    {
+      "Dataset": "Radiomic Features",
+      "Number_of_Features": 490,
+      "Concordance_Index": 0.83,
+      "CV_Std": 0.083
+    },
+    {
+      "Dataset": "Clinical and Radiomic Features",
+      "Number_of_Features": 502,
+      "Concordance_Index": 0.86,
+      "CV_Std": 0.066
+    }
+  ],
+  "logrank_test_statistic": 135.11,
+  "logrank_p_value": 3.127788817483126e-31
+}
