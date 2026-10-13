@@ -33,13 +33,13 @@ def run_cli_demo():
     print("  Course: UE24CS352A Machine Learning Mini-Project")
     print("#" * 80)
 
-    print("\n--- [PART 1: MEMBER 1 — LAPLACE MULTINOMIAL NAIVE BAYES & SMOTE] ---")
+    print("\n--- [PART 1: DILIPAN Y (PES1UG24AM092) — LAPLACE MULTINOMIAL NAIVE BAYES & SMOTE] ---")
     t1 = pd.DataFrame(summary["table1_naive_bayes"])
     print(t1[["Threshold_Label", "High_Risk_Count", "Low_Risk_Count", "Balanced_Accuracy", "Fold_Std"]].to_string(index=False))
     print(f"\n  => Selected Optimal Threshold : {summary['optimal_nb_threshold_days']} days")
     print(f"  => SMOTE Cohort Expansion     : {summary['n_patients_original']} -> {summary['n_patients_augmented']} patients (+{summary['n_synthetic_added']} synthetic high-risk cases)")
 
-    print("\n--- [PART 2: MEMBER 2 — VARIANCE PRUNING, COXPH C-INDEX & KAPLAN-MEIER] ---")
+    print("\n--- [PART 2: SAI HEMANTH (PES1UG24AM101) — VARIANCE PRUNING, COXPH C-INDEX & KM] ---")
     print(f"  => Radiomic Features Pruned   : {summary['n_radiomic_total']} -> {summary['n_radiomic_retained']} retained ({summary['n_radiomic_removed']} high-error-band >1 removed)")
     t2 = pd.DataFrame(summary["table2_cox_models"])
     print("\n" + t2.to_string(index=False))

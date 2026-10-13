@@ -78,8 +78,8 @@ def main():
 
     tabs = st.tabs([
         "📊 1. Dataset & Cohort Explorer",
-        "🧮 2. [Member 1] Naive Bayes & SMOTE",
-        "📈 3. [Member 2] CoxPH & Kaplan-Meier",
+        "🧮 2. [Dilipan Y] Naive Bayes & SMOTE",
+        "📈 3. [Sai Hemanth] CoxPH & Kaplan-Meier",
         "🩺 4. Live Patient Prognosis Predictor",
     ])
 
@@ -100,9 +100,9 @@ def main():
                     use_container_width=True,
                 )
 
-    # TAB 2: Member 1 Pipeline
+    # TAB 2: Dilipan Y Pipeline
     with tabs[1]:
-        st.subheader("Member 1 Pipeline: Laplace Multinomial Naive Bayes & SMOTE Augmentation")
+        st.subheader("Dilipan Y (PES1UG24AM092) — Laplace Multinomial Naive Bayes & SMOTE")
         st.markdown(
             r"""
             **Generative Model Formulation (Laplace Smoothing):**
@@ -128,9 +128,9 @@ def main():
                 f"(+{summary['n_synthetic_added']} synthetic Stage IIB & Stage III patients)."
             )
 
-    # TAB 3: Member 2 Pipeline
+    # TAB 3: Sai Hemanth Pipeline
     with tabs[2]:
-        st.subheader("Member 2 Pipeline: Regularized Cox Proportional Hazards & Kaplan-Meier Analysis")
+        st.subheader("Sai Hemanth (PES1UG24AM101) — Regularized CoxPH & Kaplan-Meier Analysis")
         st.markdown(
             r"""
             **CoxPH Hazard & ElasticNet Penalty (`lifelines`):**

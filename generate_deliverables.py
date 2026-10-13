@@ -103,7 +103,7 @@ def build_two_page_writeup_pdf(output_pdf: str = "Mini_Project_Writeup.pdf") -> 
     story.append(
         Paragraph(
             "<b>Reference Paper:</b> Arash Jamalian (Stanford University CS229) &nbsp;|&nbsp; "
-            "<b>Team Composition:</b> 2 Members (Member 1: Naive Bayes &amp; SMOTE | Member 2: CoxPH &amp; Survival Analysis)",
+            "<b>Team Members:</b> Dilipan Y (PES1UG24AM092) &amp; Sai Hemanth (PES1UG24AM101)",
             subtitle_style,
         )
     )
@@ -143,7 +143,7 @@ def build_two_page_writeup_pdf(output_pdf: str = "Mini_Project_Writeup.pdf") -> 
     story.append(Paragraph("3. Approach &amp; Mathematical Methodology", sec_style))
     story.append(
         Paragraph(
-            "<b>Step A — Threshold Selection via Laplace Multinomial Naive Bayes (Member 1):</b> "
+            "<b>Step A — Threshold Selection via Laplace Multinomial Naive Bayes (Dilipan Y - PES1UG24AM092):</b> "
             "To apply SMOTE augmentation effectively, patients are first grouped into high-risk (<i>y</i> = 1) and low-risk (<i>y</i> = 0) "
             "cohorts using candidate survival day thresholds (240, 270, 300, 330, 360 days). Five clinical features (Stage Grouping, "
             "Chemotherapy Time, Tumor Width, NCCN Resectability, and Radiation Therapy) are discretized into <i>V</i> buckets and modeled "
@@ -160,10 +160,10 @@ def build_two_page_writeup_pdf(output_pdf: str = "Mini_Project_Writeup.pdf") -> 
     )
     story.append(
         Paragraph(
-            "<b>Step B — SMOTE Minority Oversampling (Member 1):</b> Using the optimal <b>270-day threshold</b> (highest 10-fold CV "
+            "<b>Step B — SMOTE Minority Oversampling (Dilipan Y - PES1UG24AM092):</b> Using the optimal <b>270-day threshold</b> (highest 10-fold CV "
             "balanced accuracy), Synthetic Minority Over-sampling Technique (SMOTE, <i>k</i> = 5 nearest neighbors) synthesizes "
             f"high-risk Stage IIB and III examples in the joint clinical + radiomic space, expanding the cohort from 80 to {summary['n_patients_augmented']} cases.<br/>"
-            "<b>Step C — Non-Parametric &amp; Regularized Cox Proportional Hazards Survival Analysis (Member 2):</b> "
+            "<b>Step C — Non-Parametric &amp; Regularized Cox Proportional Hazards Survival Analysis (Sai Hemanth - PES1UG24AM101):</b> "
             "We estimate survival probability <i>S_KM(t) = &prod;_{t_i &lt; t} (n_i - d_i)/n_i</i> and fit L2-regularized Cox Proportional "
             "Hazards models <i>h(t, X) = h_0(t) exp(&beta;^T X)</i> via partial likelihood maximization with ElasticNet penalty "
             "(<i>penalizer</i> = 0.1, <i>l1_ratio</i> = 0.0). Out of 900 radiomic features, <b>410 collinear features with large coefficient "
@@ -265,8 +265,8 @@ def build_two_page_writeup_pdf(output_pdf: str = "Mini_Project_Writeup.pdf") -> 
             "achieved the highest 10-fold CV C-index of <b>0.82</b>. (4) Dividing patients by median partial hazard yielded statistically "
             f"significant Kaplan-Meier separation (Log-Rank statistic = <b>{summary['logrank_test_statistic']:.2f}</b>, <i>p</i> &lt; 0.001), "
             "with Chemotherapy Time and Primary Tumor stage (T2–T4) emerging as top clinical predictors.<br/>"
-            "&bull; <b>Work Split (2-Member Team):</b> <b>Member 1</b> implemented clinical preprocessing, Multinomial Naive Bayes with "
-            "Laplace smoothing, 10-fold threshold validation, SMOTE augmentation, and Figures 1–3. <b>Member 2</b> implemented "
+            "&bull; <b>Individual Contributions:</b> <b>Dilipan Y (PES1UG24AM092)</b> implemented clinical preprocessing, Multinomial Naive Bayes with "
+            "Laplace smoothing, 10-fold threshold validation, SMOTE augmentation, and Figures 1–3. <b>Sai Hemanth (PES1UG24AM101)</b> implemented "
             "radiomic variance filtering (900&rarr;490), L2-regularized CoxPH models, Kaplan-Meier/Log-Rank analysis, Figures 4–6, and the live Streamlit demo.",
             body_style,
         )

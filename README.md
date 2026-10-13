@@ -19,12 +19,12 @@ In this project, we implement an end-to-end survival analysis and risk stratific
 
 ---
 
-## 🤝 2-Member Team Work Split
+## 🤝 Team Work Split & Individual Contributions
 
-| Module / Deliverable | Assigned Member | Key Responsibilities & Code Files |
+| Module / Deliverable | Assigned Team Member | Key Responsibilities & Code Files |
 | :--- | :--- | :--- |
-| **1. Data Engineering, Naive Bayes & SMOTE** | **Member 1** | • Clinical feature discretization & cohort exploration (`src/data_generator.py`)<br>• Custom Multinomial Naive Bayes with MLE & Laplace Smoothing (`src/naive_bayes_smote.py`)<br>• 10-Fold CV threshold optimization (`240–360 days` → `270 days` optimal)<br>• 5-NN SMOTE augmentation (`imbalanced-learn`) & Figures 1–3 (`src/visualization.py`)<br>• Page 1 of Write-Up & Slides 1–5 of Presentation |
-| **2. Survival Modeling, CoxPH & Live Demo** | **Member 2** | • High-variance radiomic feature pruning (`900 → 490 features`, error band $>1.0$)<br>• L2-regularized Cox Proportional Hazards models (`src/survival_models.py`)<br>• 10-Fold CV Harrell's C-index evaluation (Clinical vs. Radiomic vs. Combined)<br>• Kaplan-Meier curves, Log-Rank test, Top 15 $\log(\text{HR})$ analysis & Figures 4–6<br>• Interactive Streamlit Live Demo (`app.py`), Page 2 of Write-Up & Slides 6–10 |
+| **1. Data Engineering, Naive Bayes & SMOTE** | **Dilipan Y**<br>`(PES1UG24AM092)` | • Clinical feature discretization & cohort exploration (`src/data_generator.py`)<br>• Custom Multinomial Naive Bayes with MLE & Laplace Smoothing (`src/naive_bayes_smote.py`)<br>• 10-Fold CV threshold optimization (`240–360 days` → `270 days` optimal)<br>• 5-NN SMOTE augmentation (`imbalanced-learn`) & Figures 1–3 (`src/visualization.py`)<br>• Page 1 of Write-Up & Slides 1–5 of Presentation |
+| **2. Survival Modeling, CoxPH & Live Demo** | **Sai Hemanth**<br>`(PES1UG24AM101)` | • High-variance radiomic feature pruning (`900 → 490 features`, error band $>1.0$)<br>• L2-regularized Cox Proportional Hazards models (`src/survival_models.py`)<br>• 10-Fold CV Harrell's C-index evaluation (Clinical vs. Radiomic vs. Combined)<br>• Kaplan-Meier curves, Log-Rank test, Top 15 $\log(\text{HR})$ analysis & Figures 4–6<br>• Interactive Streamlit Live Demo (`app.py`), Page 2 of Write-Up & Slides 6–10 |
 
 ---
 
@@ -38,12 +38,15 @@ Mini-Project/
 ├── app.py                              # Deliverable 3: Interactive Streamlit Live Demo web app
 ├── generate_deliverables.py            # Script that compiles Write-up PDF & Presentation PPTX
 ├── Mini_Project_Writeup.pdf            # Deliverable 2: Concise Two-Page Project Write-up (PDF)
-├── Mini_Project_Presentation.pptx      # Deliverable 4: 10-Slide Review Presentation Deck (PPTX)
+├── Presentation.pptx                   # Deliverable 4: 10-Slide Review Presentation Deck (PPTX)
+├── Mini_Project_Presentation.pptx      # Deliverable 4: Alternative Presentation filename (PPTX)
+├── Template.pptx                       # Reference Course Presentation Template
 ├── src/
 │   ├── __init__.py
 │   ├── data_generator.py               # 80-patient Clinical (12) + Radiomic (900) dataset generator
-│   ├── naive_bayes_smote.py            # Member 1: Laplace Multinomial Naive Bayes & 5-NN SMOTE
-│   ├── survival_models.py              # Member 2: Radiomic pruning, CoxPH, Kaplan-Meier & Log-Rank
+│   ├── naive_bayes_smote.py            # Dilipan Y: Laplace Multinomial Naive Bayes & 5-NN SMOTE
+│   ├── survival_models.py              # Sai Hemanth: Radiomic pruning, CoxPH, Kaplan-Meier & Log-Rank
+│   ├── presentation_builder.py         # Automated generator matching Template.pptx layout
 │   └── visualization.py                # Publication-grade plotting for Figures 1 to 6
 ├── data/
 │   ├── clinical_data.csv               # 80-patient clinical & survival dataset

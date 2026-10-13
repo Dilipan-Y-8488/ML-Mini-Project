@@ -1,6 +1,6 @@
 """
-Member 2 Module: Survival Analysis (Kaplan-Meier, Log-Rank, & Cox Proportional Hazards)
-=======================================================================================
+Sai Hemanth (PES1UG24AM101) Module: Survival Analysis (CoxPH, Kaplan-Meier & Pruning)
+=====================================================================================
 Implements Section 4 & Section 5 (Part 2) of Arash Jamalian (Stanford CS229):
 1. Non-parametric Survival Estimation:
    - Kaplan-Meier Survival Estimator: S_KM(t) = prod_{i: t_i < t} (n_i - d_i) / n_i

@@ -1,6 +1,6 @@
 """
-Member 1 Module: Clinical Discretization, Multinomial Naive Bayes & SMOTE Augmentation
-======================================================================================
+Dilipan Y (PES1UG24AM092) Module: Clinical Discretization, Naive Bayes & SMOTE Augmentation
+===========================================================================================
 Implements Section 4 & Section 5 (Part 1) of Arash Jamalian (Stanford CS229):
 1. Discretizes the 5 selected clinical features into V buckets:
    - Stage Grouping, Chemotherapy Time, Tumor Width, NCCN Resectability Criteria,

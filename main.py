@@ -3,20 +3,21 @@ Main End-to-End Pipeline: Pancreatic Cancer Prognosis using Clinical & Radiomic 
 ====================================================================================
 Course: UE24CS352A - Machine Learning Mini-Project
 Reference: Arash Jamalian, Stanford CS229 Final Report
+Team: Dilipan Y (PES1UG24AM092) & Sai Hemanth (PES1UG24AM101)
 
 Executes:
   1. Synthetic Stanford QFIP Dataset Generation (80 patients, 12 clinical + 900 radiomic features)
-  2. [Member 1] Multinomial Naive Bayes Classifier with Laplace Smoothing (10-fold CV across
+  2. [Dilipan Y] Multinomial Naive Bayes Classifier with Laplace Smoothing (10-fold CV across
      thresholds 240, 270, 300, 330, 360 days -> selects optimal 270-day threshold)
-  3. [Member 1] SMOTE Augmentation (k=5 nearest neighbors on high-risk minority class <270 days)
-  4. [Member 2] High-Variance Radiomic Feature Filtering (900 -> removes 410 high-error-band
+  3. [Dilipan Y] SMOTE Augmentation (k=5 nearest neighbors on high-risk minority class <270 days)
+  4. [Sai Hemanth] High-Variance Radiomic Feature Filtering (900 -> removes 410 high-error-band
      features -> retains 490 radiomic features)
-  5. [Member 2] Regularized Cox Proportional Hazards Regression (penalizer=0.1, l1_ratio=0.0)
+  5. [Sai Hemanth] Regularized Cox Proportional Hazards Regression (penalizer=0.1, l1_ratio=0.0)
      evaluated via 10-fold CV Harrell's Concordance Index (C-index) on:
        - Clinical Features (12)
        - Radiomic Features (490)
        - Combined Clinical + Radiomic Features (502)
-  6. [Member 2] Kaplan-Meier Survival Estimation & Log-Rank Test (High vs. Low Risk Groups)
+  6. [Sai Hemanth] Kaplan-Meier Survival Estimation & Log-Rank Test (High vs. Low Risk Groups)
   7. Generates all 6 Figures (results/fig1..fig6.png) and summary JSON/CSV tables.
 """
 
@@ -60,8 +61,8 @@ def run_pipeline() -> dict:
     print(f"  -> Radiomic shape : {radiomic_df.shape}")
     print(f"  -> Censoring rate : {(1.0 - clinical_df['Event_Observed'].mean()) * 100:.1f}% right-censored")
 
-    # Step 2: Member 1 - Naive Bayes Threshold Selection
-    print("\n[Step 2 - Member 1] Training Laplace Multinomial Naive Bayes across survival thresholds...")
+    # Step 2: Dilipan Y - Naive Bayes Threshold Selection
+    print("\n[Step 2 - Dilipan Y (PES1UG24AM092)] Training Laplace Multinomial Naive Bayes across survival thresholds...")
     table1_df = evaluate_naive_bayes_thresholds(clinical_df)
     table1_df.to_csv("results/table1_naive_bayes_cv.csv", index=False)
     print("\n  Table 1: 10-Fold CV Balanced Accuracy with Naive Bayes Classifier Models")
@@ -73,16 +74,16 @@ def run_pipeline() -> dict:
     best_row = table1_df.loc[table1_df["Balanced_Accuracy"].idxmax()]
     optimal_thresh = int(best_row["Threshold_Days"])
 
-    # Step 3: Member 1 - SMOTE Augmentation
-    print(f"\n[Step 3 - Member 1] Applying SMOTE (k=5) using optimal threshold = {optimal_thresh} days...")
+    # Step 3: Dilipan Y - SMOTE Augmentation
+    print(f"\n[Step 3 - Dilipan Y (PES1UG24AM092)] Applying SMOTE (k=5) using optimal threshold = {optimal_thresh} days...")
     aug_clinical_df, aug_radiomic_df, is_synthetic = augment_dataset_with_smote(
         clinical_df, radiomic_df, optimal_threshold=optimal_thresh, k_neighbors=5, seed=42
     )
     print(f"  -> Original cohort  : {len(clinical_df)} patients")
     print(f"  -> Augmented cohort : {len(aug_clinical_df)} patients (+{int(is_synthetic.sum())} synthetic high-risk cases)")
 
-    # Step 4: Member 2 - High-Variance Radiomic Feature Filtering (900 -> 490)
-    print("\n[Step 4 - Member 2] Filtering high-variance radiomic features (Error Band > 1.0)...")
+    # Step 4: Sai Hemanth - High-Variance Radiomic Feature Filtering (900 -> 490)
+    print("\n[Step 4 - Sai Hemanth (PES1UG24AM101)] Filtering high-variance radiomic features (Error Band > 1.0)...")
     retained_rad, removed_rad, rad_stats_df = filter_high_variance_radiomic_features(
         aug_clinical_df, aug_radiomic_df, penalizer=0.1, l1_ratio=0.0, target_retained=490
     )
@@ -90,8 +91,8 @@ def run_pipeline() -> dict:
     print(f"  -> Removed High-Error Features: {len(removed_rad)}")
     print(f"  -> Retained Radiomic Features : {len(retained_rad)}")
 
-    # Step 5: Member 2 - 10-Fold CV Cox Proportional Hazards Regression
-    print("\n[Step 5 - Member 2] Running 10-Fold CV Cox Proportional Hazards Models (penalizer=0.1, L2)...")
+    # Step 5: Sai Hemanth - 10-Fold CV Cox Proportional Hazards Regression
+    print("\n[Step 5 - Sai Hemanth (PES1UG24AM101)] Running 10-Fold CV Cox Proportional Hazards Models (penalizer=0.1, L2)...")
     table2_df, fitted_models, scaled_datasets = evaluate_cox_models_10fold_cv(
         aug_clinical_df, aug_radiomic_df, retained_rad, penalizer=0.1, l1_ratio=0.0, n_splits=10, seed=42
     )
@@ -104,8 +105,8 @@ def run_pipeline() -> dict:
             f"C-index: {row['Concordance_Index']:.2f} (±{row['CV_Std']:.3f})"
         )
 
-    # Step 6: Member 2 - Kaplan-Meier Curves & Log-Rank Test
-    print("\n[Step 6 - Member 2] Computing Kaplan-Meier Survival Curves & Log-Rank Test...")
+    # Step 6: Sai Hemanth - Kaplan-Meier Curves & Log-Rank Test
+    print("\n[Step 6 - Sai Hemanth (PES1UG24AM101)] Computing Kaplan-Meier Survival Curves & Log-Rank Test...")
     km_info = compute_kaplan_meier_and_logrank(
         fitted_models["Clinical and Radiomic Features"],
         scaled_datasets["Clinical and Radiomic Features"],

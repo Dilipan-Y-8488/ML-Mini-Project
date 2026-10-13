@@ -204,9 +204,9 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
     c1_tf.margin_left = c1_tf.margin_right = Inches(0.25)
     c1_tf.margin_top = Inches(0.20)
     p = c1_tf.paragraphs[0]
-    p.text = "Member 1 Pipeline: Data Engineering & SMOTE"
+    p.text = "Dilipan Y (PES1UG24AM092) — Data Eng & SMOTE"
     p.font.name = FONT_NAME
-    p.font.size = Pt(15)
+    p.font.size = Pt(14)
     p.font.bold = True
     p.font.color.rgb = COLOR_CYAN_LIGHT
     p.space_after = Pt(6)
@@ -230,9 +230,9 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
     c2_tf.margin_left = c2_tf.margin_right = Inches(0.25)
     c2_tf.margin_top = Inches(0.20)
     p = c2_tf.paragraphs[0]
-    p.text = "Member 2 Pipeline: CoxPH & Survival Analysis"
+    p.text = "Sai Hemanth (PES1UG24AM101) — CoxPH & Survival"
     p.font.name = FONT_NAME
-    p.font.size = Pt(15)
+    p.font.size = Pt(14)
     p.font.bold = True
     p.font.color.rgb = COLOR_CYAN_LIGHT
     p.space_after = Pt(6)
@@ -325,13 +325,13 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
     )
 
     # =========================================================================
-    # SLIDE 4: Member 1 - Naive Bayes Risk Threshold Selection (Template Slide 4)
+    # SLIDE 4: Dilipan Y - Naive Bayes Risk Threshold Selection (Template Slide 4)
     # =========================================================================
     s4 = prs.slides.add_slide(blank_layout)
     add_slide_header(
         s4,
         "Naive Bayes Classifier for Risk Threshold Selection",
-        "Member 1 Pipeline: Objective data-driven threshold selection via Laplace Multinomial Naive Bayes",
+        "Presenter: Dilipan Y (PES1UG24AM092) | Objective threshold selection via Laplace Multinomial Naive Bayes",
         4,
     )
     add_card(
@@ -352,13 +352,13 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
         s4.shapes.add_picture("results/fig2_naive_bayes_thresholds.png", Inches(6.75), Inches(1.45), width=Inches(5.95))
 
     # =========================================================================
-    # SLIDE 5: Member 1 - SMOTE Augmentation (Template Slide 5 counterpart)
+    # SLIDE 5: Dilipan Y - SMOTE Augmentation (Template Slide 5 counterpart)
     # =========================================================================
     s5 = prs.slides.add_slide(blank_layout)
     add_slide_header(
         s5,
         "Minority Augmentation via 5-NN SMOTE",
-        "Member 1 Pipeline: Populating the scarce high-risk (< 270 days) Stage IIB and Stage III cohort",
+        "Presenter: Dilipan Y (PES1UG24AM092) | Populating the scarce high-risk (< 270 days) Stage IIB and Stage III cohort",
         5,
     )
     add_card(
@@ -379,13 +379,13 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
         s5.shapes.add_picture("results/fig3_clinical_post_smote.png", Inches(6.75), Inches(1.45), width=Inches(5.95))
 
     # =========================================================================
-    # SLIDE 6: Member 2 - Radiomics Variance Pruning (Template Slide 6 counterpart)
+    # SLIDE 6: Sai Hemanth - Radiomics Variance Pruning (Template Slide 6 counterpart)
     # =========================================================================
     s6 = prs.slides.add_slide(blank_layout)
     add_slide_header(
         s6,
         "Radiomics Feature Pruning & Variance Reduction",
-        "Member 2 Pipeline: Removing collinear high-error-band (> 1.0) features to stabilize Cox regression",
+        "Presenter: Sai Hemanth (PES1UG24AM101) | Removing collinear high-error-band (> 1.0) features to stabilize Cox regression",
         6,
     )
     # Two top metric cards
@@ -410,13 +410,13 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
     )
 
     # =========================================================================
-    # SLIDE 7: Member 2 - CoxPH Model Evaluation (Template Slide 5 & 7 counterpart)
+    # SLIDE 7: Sai Hemanth - CoxPH Model Evaluation (Template Slide 5 & 7 counterpart)
     # =========================================================================
     s7 = prs.slides.add_slide(blank_layout)
     add_slide_header(
         s7,
         "Multimodal Cox Proportional Hazards Model Evaluation",
-        "Member 2 Pipeline: 10-Fold CV Harrell's Concordance Index (C-Index) across Clinical, Radiomic & Combined Sets",
+        "Presenter: Sai Hemanth (PES1UG24AM101) | 10-Fold CV Harrell's Concordance Index (C-Index) across Modalities",
         7,
     )
 
@@ -445,13 +445,13 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
         s7.shapes.add_picture("results/fig4_kaplan_meier_risk_groups.png", Inches(6.75), Inches(1.45), width=Inches(5.95))
 
     # =========================================================================
-    # SLIDE 8: Top 15 Prognostic Features (Template Slide 8 counterpart)
+    # SLIDE 8: Sai Hemanth - Top 15 Prognostic Features (Template Slide 8 counterpart)
     # =========================================================================
     s8 = prs.slides.add_slide(blank_layout)
     add_slide_header(
         s8,
         "Top 15 Prognostic Features & Hazard Contributions",
-        "Member 2 Pipeline: Quantifying feature impact via log Hazard Ratios (log(HR)) with 95% Confidence Intervals",
+        "Presenter: Sai Hemanth (PES1UG24AM101) | Quantifying feature impact via log Hazard Ratios with 95% CI",
         8,
     )
     add_card(
@@ -535,9 +535,9 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
     ta.margin_left = ta.margin_right = Inches(0.25)
     ta.margin_top = Inches(0.20)
     p = ta.paragraphs[0]
-    p.text = "Member 1 Work Split (Generative & Augmentation)"
+    p.text = "Dilipan Y — PES1UG24AM092 (Generative & SMOTE)"
     p.font.name = FONT_NAME
-    p.font.size = Pt(14)
+    p.font.size = Pt(13.5)
     p.font.bold = True
     p.font.color.rgb = COLOR_CYAN_LIGHT
     p.space_after = Pt(8)
@@ -563,9 +563,9 @@ def build_presentation(output_paths: list[str] = ["Mini_Project_Presentation.ppt
     tb.margin_left = tb.margin_right = Inches(0.25)
     tb.margin_top = Inches(0.20)
     p = tb.paragraphs[0]
-    p.text = "Member 2 Work Split (Survival Regression & Demo)"
+    p.text = "Sai Hemanth — PES1UG24AM101 (CoxPH & Survival)"
     p.font.name = FONT_NAME
-    p.font.size = Pt(14)
+    p.font.size = Pt(13.5)
     p.font.bold = True
     p.font.color.rgb = COLOR_CYAN_LIGHT
     p.space_after = Pt(8)
