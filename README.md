@@ -50,11 +50,9 @@ ML-Mini-Project/
 ├── demo_cli.py                         # Fast terminal live demo script
 ├── Mini_Project_Writeup.pdf            # Two-page academic project summary (PDF)
 ├── Presentation.pptx                   # Review presentation slide deck (PPTX)
-├── Presentation_Guide.pdf              # Comprehensive presentation & viva defense guide (PDF)
 ├── tools/
 │   ├── make_writeup.py                 # Reproducible PDF write-up generator script
-│   ├── make_presentation.py            # Reproducible PowerPoint slide deck generator script
-│   └── make_presentation_guide.py      # Reproducible presentation & viva guide generator script
+│   └── make_presentation.py            # Reproducible PowerPoint slide deck generator script
 ├── src/
 │   ├── __init__.py
 │   ├── data_generator.py               # Synthetic clinical & radiomic dataset synthesis

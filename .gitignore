@@ -24,3 +24,8 @@ Guidelines and Instructions_Mini Project Assignment.pdf
 scratch/
 .ipynb_checkpoints/
 
+# Local reference materials (not tracked in public repo)
+Presentation_Guide.pdf
+tools/make_presentation_guide.py
+
+
