@@ -28,11 +28,14 @@ import pandas as pd
 from src.data_generator import generate_stanford_pancreatic_dataset
 from src.naive_bayes_smote import (
     evaluate_naive_bayes_thresholds,
+    select_optimal_threshold,
     augment_dataset_with_smote,
 )
 from src.survival_models import (
     filter_high_variance_radiomic_features,
-    evaluate_cox_models_10fold_cv,
+    evaluate_cox_models_leak_free_cv,
+    evaluate_cox_models_paper_style_leaky_cv,
+    build_leakage_comparison_table,
     compute_kaplan_meier_and_logrank,
     extract_top_15_features,
 )
@@ -53,7 +56,7 @@ def run_pipeline() -> dict:
     print("=" * 78)
 
     # Step 1: Generate / Load Dataset
-    print("\n[Step 1] Generating 80-patient Clinical (12 features) & Radiomic (900 features) dataset...")
+    print("\n[Step 1] Generating 80-patient Clinical (12 features) & Radiomic (900 features) synthetic dataset...")
     clinical_df, radiomic_df = generate_stanford_pancreatic_dataset(
         n_patients=80, n_radiomic=900, seed=42, save_dir="data"
     )
@@ -64,17 +67,17 @@ def run_pipeline() -> dict:
     # Step 2: Dilipan Y - Naive Bayes Threshold Selection
     print("\n[Step 2 - Dilipan Y (PES1UG24AM092)] Training Laplace Multinomial Naive Bayes across survival thresholds...")
     table1_df = evaluate_naive_bayes_thresholds(clinical_df)
+    optimal_thresh, rule_fired, tie_trace = select_optimal_threshold(table1_df)
     table1_df.to_csv("results/table1_naive_bayes_cv.csv", index=False)
     print("\n  Table 1: 10-Fold CV Balanced Accuracy with Naive Bayes Classifier Models")
-    print("  " + "-" * 58)
+    print("  " + "-" * 75)
     for _, row in table1_df.iterrows():
-        marker = " <-- Optimal" if row["Threshold_Days"] == 270 else ""
-        print(f"  {row['Threshold_Label']:<15} | Balanced Accuracy: {row['Balanced_Accuracy']:.2f} (±{row['Fold_Std']:.3f}){marker}")
+        marker = " <-- Selected Optimal" if row["Threshold_Days"] == optimal_thresh else ""
+        print(f"  {row['Threshold_Label']:<12} | Balanced Accuracy: {row['Balanced_Accuracy']:.2f} (±{row['Fold_Std']:.3f}) | Status: {row.get('Selection_Status', '')}{marker}")
 
-    best_row = table1_df.loc[table1_df["Balanced_Accuracy"].idxmax()]
-    optimal_thresh = int(best_row["Threshold_Days"])
+    print(f"\n  Threshold Selection Rule Fired:\n  -> {rule_fired}")
 
-    # Step 3: Dilipan Y - SMOTE Augmentation
+    # Step 3: Dilipan Y - SMOTE Augmentation (for overall cohort reference)
     print(f"\n[Step 3 - Dilipan Y (PES1UG24AM092)] Applying SMOTE (k=5) using optimal threshold = {optimal_thresh} days...")
     aug_clinical_df, aug_radiomic_df, is_synthetic = augment_dataset_with_smote(
         clinical_df, radiomic_df, optimal_threshold=optimal_thresh, k_neighbors=5, seed=42
@@ -91,18 +94,36 @@ def run_pipeline() -> dict:
     print(f"  -> Removed High-Error Features: {len(removed_rad)}")
     print(f"  -> Retained Radiomic Features : {len(retained_rad)}")
 
-    # Step 5: Sai Hemanth - 10-Fold CV Cox Proportional Hazards Regression
+    # Step 5: Sai Hemanth - 10-Fold CV Cox Proportional Hazards Regression (Leak-Free vs Leaky)
     print("\n[Step 5 - Sai Hemanth (PES1UG24AM101)] Running 10-Fold CV Cox Proportional Hazards Models (penalizer=0.1, L2)...")
-    table2_df, fitted_models, scaled_datasets = evaluate_cox_models_10fold_cv(
+    print("  -> Running Leak-Free Cross-Validation (Standard ML Best Practice: train-fold only SMOTE & pruning)...")
+    table2_leak_free_df, fitted_models, scaled_datasets = evaluate_cox_models_leak_free_cv(
+        clinical_df, radiomic_df, optimal_threshold=optimal_thresh, penalizer=0.1, l1_ratio=0.0, n_splits=10, seed=42, n_jobs=4
+    )
+    table2_leak_free_df.to_csv("results/table2_cox_c_index.csv", index=False)
+
+    print("  -> Running Paper-Style Leaky Cross-Validation (Replication Baseline: SMOTE & pruning before CV)...")
+    table2_leaky_df, _, _ = evaluate_cox_models_paper_style_leaky_cv(
         aug_clinical_df, aug_radiomic_df, retained_rad, penalizer=0.1, l1_ratio=0.0, n_splits=10, seed=42
     )
-    table2_df.to_csv("results/table2_cox_c_index.csv", index=False)
-    print("\n  Table 2: 10-Fold Cross-Validation Concordance Index (C-index) with CoxPH Models")
+
+    table2b_df = build_leakage_comparison_table(table2_leaky_df, table2_leak_free_df)
+    table2b_df.to_csv("results/table2b_leakage_comparison.csv", index=False)
+
+    print("\n  Table 2: Honest Leak-Free 10-Fold CV Concordance Index (C-Index)")
     print("  " + "-" * 70)
-    for _, row in table2_df.iterrows():
+    for _, row in table2_leak_free_df.iterrows():
         print(
             f"  {row['Dataset']:<34} | Features: {int(row['Number_of_Features']):<4} | "
             f"C-index: {row['Concordance_Index']:.2f} (±{row['CV_Std']:.3f})"
+        )
+
+    print("\n  Table 2b: Leakage Comparison (Leaky vs. Leak-Free Cross-Validation)")
+    print("  " + "-" * 88)
+    for _, row in table2b_df.iterrows():
+        print(
+            f"  {row['Dataset']:<32} | Leak-Free: {row['Leak_Free_C_Index']:.2f} (±{row['Leak_Free_CV_Std']:.3f}) | "
+            f"Leaky: {row['Leaky_C_Index']:.2f} (±{row['Leaky_CV_Std']:.3f}) | Inflation: +{row['Inflation_Delta']:.2f}"
         )
 
     # Step 6: Sai Hemanth - Kaplan-Meier Curves & Log-Rank Test
@@ -120,7 +141,7 @@ def run_pipeline() -> dict:
     # Step 7: Generate All Figures
     print("\n[Step 7] Generating Figures 1-6 in `results/`...")
     f1 = plot_fig1_clinical_pre_smote(clinical_df)
-    f2 = plot_fig2_naive_bayes_thresholds(table1_df)
+    f2 = plot_fig2_naive_bayes_thresholds(table1_df, optimal_thresh=optimal_thresh)
     f3 = plot_fig3_clinical_post_smote(aug_clinical_df, threshold_days=optimal_thresh)
     f4 = plot_fig4_kaplan_meier_risk_groups(km_info)
     f5 = plot_fig5_top15_cox_coefficients(top15_df)
@@ -137,8 +158,11 @@ def run_pipeline() -> dict:
         "n_radiomic_removed": int(len(removed_rad)),
         "n_radiomic_retained": int(len(retained_rad)),
         "optimal_nb_threshold_days": optimal_thresh,
+        "threshold_selection_rule": rule_fired,
         "table1_naive_bayes": table1_df.to_dict(orient="records"),
-        "table2_cox_models": table2_df.to_dict(orient="records"),
+        "table2_cox_models": table2_leak_free_df.to_dict(orient="records"),
+        "table2_leaky_cox_models": table2_leaky_df.to_dict(orient="records"),
+        "table2b_leakage_comparison": table2b_df.to_dict(orient="records"),
         "logrank_test_statistic": km_info["logrank_stat"],
         "logrank_p_value": km_info["logrank_p"],
     }

@@ -45,6 +45,7 @@ def load_data_and_results():
     radiomic_df = pd.read_csv("data/radiomic_data.csv")
     table1_df = pd.read_csv("results/table1_naive_bayes_cv.csv")
     table2_df = pd.read_csv("results/table2_cox_c_index.csv")
+    table2b_df = pd.read_csv("results/table2b_leakage_comparison.csv") if os.path.exists("results/table2b_leakage_comparison.csv") else None
     top15_df = pd.read_csv("results/top15_cox_features.csv")
     with open("results/metrics_summary.json", "r", encoding="utf-8") as f:
         summary = json.load(f)
@@ -52,11 +53,11 @@ def load_data_and_results():
     aug_clin, aug_rad, _ = augment_dataset_with_smote(
         clinical_df, radiomic_df, optimal_threshold=summary["optimal_nb_threshold_days"]
     )
-    return clinical_df, radiomic_df, aug_clin, aug_rad, table1_df, table2_df, top15_df, summary
+    return clinical_df, radiomic_df, aug_clin, aug_rad, table1_df, table2_df, table2b_df, top15_df, summary
 
 
 def main():
-    clinical_df, radiomic_df, aug_clin, aug_rad, table1_df, table2_df, top15_df, summary = (
+    clinical_df, radiomic_df, aug_clin, aug_rad, table1_df, table2_df, table2b_df, top15_df, summary = (
         load_data_and_results()
     )
 
@@ -70,8 +71,8 @@ def main():
     col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("Cohort Size (Original → SMOTE)", f"{summary['n_patients_original']} → {summary['n_patients_augmented']}")
     col2.metric("Radiomic Features (Raw → Filtered)", f"{summary['n_radiomic_total']} → {summary['n_radiomic_retained']}")
-    col3.metric("Optimal NB Risk Threshold", f"{summary['optimal_nb_threshold_days']} Days (0.69 Acc)")
-    col4.metric("Best 10-Fold CV C-Index", f"{table2_df['Concordance_Index'].max():.2f} (Combined)")
+    col3.metric("Optimal NB Risk Threshold", f"{summary['optimal_nb_threshold_days']} Days (0.74 Acc)")
+    col4.metric("Leak-Free 10-Fold CV C-Index", f"{table2_df['Concordance_Index'].max():.2f} (Combined)")
     col5.metric("Log-Rank Test Stat (p < 0.05)", f"{summary['logrank_test_statistic']:.2f}")
 
     st.divider()
@@ -85,12 +86,13 @@ def main():
 
     # TAB 1: Dataset Explorer
     with tabs[0]:
-        st.subheader("Stanford QFIP Clinical (12 Features) & Radiomic (900 Features) Cohort")
+        st.subheader("Synthetic Stanford QFIP Clinical (12 Features) & Radiomic (900 Features) Cohort")
+        st.caption("Disclaimer: This dataset is synthetic, generated to mimic the published Stanford cohort (NDA protected).")
         c1, c2 = st.columns([1.25, 1.0])
         with c1:
             st.markdown("##### Clinical Dataset Sample (`data/clinical_data.csv`)")
             st.dataframe(clinical_df.head(15), use_container_width=True)
-            st.markdown("##### Radiomic Features Sample (First 12 of 900 QFIP Features)")
+            st.markdown("##### Radiomic Features Sample (First 12 of 900 Simulated Radiomic Features)")
             st.dataframe(radiomic_df.iloc[:10, :12], use_container_width=True)
         with c2:
             if os.path.exists("results/fig1_clinical_pre_smote.png"):
@@ -112,10 +114,10 @@ def main():
         m1_col1, m1_col2 = st.columns([1.0, 1.1])
         with m1_col1:
             st.markdown("##### Table 1: 10-Fold CV Balanced Accuracy across Survival Thresholds")
-            st.dataframe(
-                table1_df[["Threshold_Label", "High_Risk_Count", "Low_Risk_Count", "Balanced_Accuracy", "Fold_Std"]],
-                use_container_width=True,
-            )
+            t1_cols = [c for c in ["Threshold_Label", "High_Risk_Count", "Low_Risk_Count", "Balanced_Accuracy", "Fold_Std", "Selection_Status"] if c in table1_df.columns]
+            st.dataframe(table1_df[t1_cols], use_container_width=True)
+            if "threshold_selection_rule" in summary:
+                st.caption(f"**Selection Rule:** {summary['threshold_selection_rule']}")
             if os.path.exists("results/fig2_naive_bayes_thresholds.png"):
                 st.image("results/fig2_naive_bayes_thresholds.png", use_container_width=True)
         with m1_col2:
@@ -133,14 +135,18 @@ def main():
         st.subheader("Sai Hemanth (PES1UG24AM101) — Regularized CoxPH & Kaplan-Meier Analysis")
         st.markdown(
             r"""
-            **CoxPH Hazard & ElasticNet Penalty (`lifelines`):**
-            $$h(t, X) = h_0(t)\exp\left(\sum_{i=1}^p \beta_i X_i\right), \qquad \text{Penalty} = \frac{1}{2}\text{penalizer}\left((1 - l_1\_\text{ratio})\|\beta\|_2^2 + l_1\_\text{ratio}\|\beta\|_1\right)$$
+            **CoxPH Hazard & L2 Ridge Penalty (`lifelines`):**
+            $$h(t, X) = h_0(t)\exp\left(\sum_{i=1}^p \beta_i X_i\right), \qquad \text{Penalty} = \frac{1}{2}\text{penalizer}\|\beta\|_2^2 \quad (\text{penalizer}=0.1, l_1\_\text{ratio}=0.0)$$
             """
         )
         m2_col1, m2_col2 = st.columns(2)
         with m2_col1:
-            st.markdown("##### Table 2: 10-Fold CV Harrell's Concordance Index (C-Index)")
+            st.markdown("##### Table 2: Honest Leak-Free 10-Fold CV C-Index")
             st.dataframe(table2_df, use_container_width=True)
+            if table2b_df is not None:
+                st.markdown("##### Table 2b: Data Leakage Comparison (Leaky vs. Leak-Free)")
+                st.dataframe(table2b_df, use_container_width=True)
+                st.caption("Note: The leak-free numbers evaluate exclusively on original patients with fold-isolated SMOTE/pruning, avoiding the artificial +0.03 to +0.06 C-index inflation of the paper-style leaky pipeline.")
             if os.path.exists("results/fig4_kaplan_meier_risk_groups.png"):
                 st.image("results/fig4_kaplan_meier_risk_groups.png", use_container_width=True)
         with m2_col2:

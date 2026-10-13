@@ -7,6 +7,7 @@
   "n_radiomic_removed": 410,
   "n_radiomic_retained": 490,
   "optimal_nb_threshold_days": 270,
+  "threshold_selection_rule": "Tied on balanced accuracy (0.74) across [270, 300, 330] days. First tie-breaker (lowest fold std = 0.105) narrowed candidates to [270, 300] days. Second tie-breaker (smallest threshold = 270 days) selected as earliest clinical high-risk boundary.",
   "table1_naive_bayes": [
     {
       "Threshold_Days": 240,
@@ -14,7 +15,8 @@
       "High_Risk_Count": 18,
       "Low_Risk_Count": 62,
       "Balanced_Accuracy": 0.64,
-      "Fold_Std": 0.172
+      "Fold_Std": 0.172,
+      "Selection_Status": "Suboptimal"
     },
     {
       "Threshold_Days": 270,
@@ -22,7 +24,8 @@
       "High_Risk_Count": 24,
       "Low_Risk_Count": 56,
       "Balanced_Accuracy": 0.74,
-      "Fold_Std": 0.105
+      "Fold_Std": 0.105,
+      "Selection_Status": "Optimal (Tied at 0.74; lowest std 0.105, smallest threshold 270d)"
     },
     {
       "Threshold_Days": 300,
@@ -30,7 +33,8 @@
       "High_Risk_Count": 24,
       "Low_Risk_Count": 56,
       "Balanced_Accuracy": 0.74,
-      "Fold_Std": 0.105
+      "Fold_Std": 0.105,
+      "Selection_Status": "Tied at 0.74 (std=0.105; discarded in favor of smaller 270d cutoff)"
     },
     {
       "Threshold_Days": 330,
@@ -38,7 +42,8 @@
       "High_Risk_Count": 25,
       "Low_Risk_Count": 55,
       "Balanced_Accuracy": 0.74,
-      "Fold_Std": 0.142
+      "Fold_Std": 0.142,
+      "Selection_Status": "Tied at 0.74 (std=0.142; discarded due to higher fold variance)"
     },
     {
       "Threshold_Days": 360,
@@ -46,10 +51,31 @@
       "High_Risk_Count": 26,
       "Low_Risk_Count": 54,
       "Balanced_Accuracy": 0.72,
-      "Fold_Std": 0.166
+      "Fold_Std": 0.166,
+      "Selection_Status": "Suboptimal"
     }
   ],
   "table2_cox_models": [
+    {
+      "Dataset": "Clinical Features",
+      "Number_of_Features": 12,
+      "Concordance_Index": 0.71,
+      "CV_Std": 0.088
+    },
+    {
+      "Dataset": "Radiomic Features",
+      "Number_of_Features": 490,
+      "Concordance_Index": 0.77,
+      "CV_Std": 0.114
+    },
+    {
+      "Dataset": "Clinical and Radiomic Features",
+      "Number_of_Features": 502,
+      "Concordance_Index": 0.8,
+      "CV_Std": 0.112
+    }
+  ],
+  "table2_leaky_cox_models": [
     {
       "Dataset": "Clinical Features",
       "Number_of_Features": 12,
@@ -67,6 +93,38 @@
       "Number_of_Features": 502,
       "Concordance_Index": 0.86,
       "CV_Std": 0.066
+    }
+  ],
+  "table2b_leakage_comparison": [
+    {
+      "Dataset": "Clinical Features",
+      "Number_of_Features": 12,
+      "Leak_Free_C_Index": 0.71,
+      "Leak_Free_CV_Std": 0.088,
+      "Leaky_C_Index": 0.74,
+      "Leaky_CV_Std": 0.101,
+      "Inflation_Delta": 0.03,
+      "Paper_Real_Data_Context": 0.67
+    },
+    {
+      "Dataset": "Radiomic Features",
+      "Number_of_Features": 490,
+      "Leak_Free_C_Index": 0.77,
+      "Leak_Free_CV_Std": 0.114,
+      "Leaky_C_Index": 0.83,
+      "Leaky_CV_Std": 0.083,
+      "Inflation_Delta": 0.06,
+      "Paper_Real_Data_Context": 0.76
+    },
+    {
+      "Dataset": "Clinical and Radiomic Features",
+      "Number_of_Features": 502,
+      "Leak_Free_C_Index": 0.8,
+      "Leak_Free_CV_Std": 0.112,
+      "Leaky_C_Index": 0.86,
+      "Leaky_CV_Std": 0.066,
+      "Inflation_Delta": 0.06,
+      "Paper_Real_Data_Context": 0.82
     }
   ],
   "logrank_test_statistic": 135.11,

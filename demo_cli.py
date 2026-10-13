@@ -30,14 +30,24 @@ def run_cli_demo():
 
     print("\n--- [PART 1: DILIPAN Y (PES1UG24AM092) — LAPLACE MULTINOMIAL NAIVE BAYES & SMOTE] ---")
     t1 = pd.DataFrame(summary["table1_naive_bayes"])
-    print(t1[["Threshold_Label", "High_Risk_Count", "Low_Risk_Count", "Balanced_Accuracy", "Fold_Std"]].to_string(index=False))
+    cols_show = [c for c in ["Threshold_Label", "High_Risk_Count", "Low_Risk_Count", "Balanced_Accuracy", "Fold_Std", "Selection_Status"] if c in t1.columns]
+    print(t1[cols_show].to_string(index=False))
     print(f"\n  => Selected Optimal Threshold : {summary['optimal_nb_threshold_days']} days")
+    if "threshold_selection_rule" in summary:
+        print(f"  => Tie-Breaking Rule Fired    : {summary['threshold_selection_rule']}")
     print(f"  => SMOTE Cohort Expansion     : {summary['n_patients_original']} -> {summary['n_patients_augmented']} patients (+{summary['n_synthetic_added']} synthetic high-risk cases)")
 
     print("\n--- [PART 2: SAI HEMANTH (PES1UG24AM101) — VARIANCE PRUNING, COXPH C-INDEX & KM] ---")
     print(f"  => Radiomic Features Pruned   : {summary['n_radiomic_total']} -> {summary['n_radiomic_retained']} retained ({summary['n_radiomic_removed']} high-error-band >1 removed)")
+    print("\n  [Table 2: Leak-Free 10-Fold CV C-Index (Honest ML Evaluation)]")
     t2 = pd.DataFrame(summary["table2_cox_models"])
-    print("\n" + t2.to_string(index=False))
+    print(t2.to_string(index=False))
+
+    if "table2b_leakage_comparison" in summary:
+        print("\n  [Table 2b: Leakage Comparison (Leaky vs. Leak-Free Cross-Validation)]")
+        t2b = pd.DataFrame(summary["table2b_leakage_comparison"])
+        print(t2b.to_string(index=False))
+
     print(f"\n  => Kaplan-Meier Log-Rank Test : Statistic = {summary['logrank_test_statistic']:.2f}, p = {summary['logrank_p_value']:.4e} (< 0.05)")
 
     print("\n--- [PART 3: LIVE PATIENT PROGNOSIS SIMULATOR] ---")

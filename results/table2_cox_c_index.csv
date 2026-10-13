@@ -1,4 +1,4 @@
 Dataset,Number_of_Features,Concordance_Index,CV_Std
-Clinical Features,12,0.74,0.101
-Radiomic Features,490,0.83,0.083
-Clinical and Radiomic Features,502,0.86,0.066
+Clinical Features,12,0.71,0.088
+Radiomic Features,490,0.77,0.114
+Clinical and Radiomic Features,502,0.8,0.112
