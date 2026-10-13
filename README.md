@@ -2,7 +2,7 @@
 
 **Course:** UE24CS352A — Machine Learning  
 **Project:** Problem Statement 6  
-**Reference Paper:** *Pancreatic cancer prognosis using clinical and radiomic data* by Arash Jamalian (Stanford University, CS229)  
+**Reference Paper:** A. Jamalian, "Pancreatic cancer prognosis using clinical and radiomic data," CS229 Project Final Report, Stanford University, 2020 (not redistributed here).
 
 ---
 
@@ -40,8 +40,6 @@ Mini-Project/
 ├── demo_cli.py                         # Fast terminal live demo script
 ├── Mini_Project_Writeup.pdf            # Two-page academic project summary (PDF)
 ├── Presentation.pptx                   # Review presentation slide deck (PPTX)
-├── Guidelines and Instructions_Mini Project Assignment.pdf
-├── Jamalian.pdf                        # Reference research paper
 ├── src/
 │   ├── __init__.py
 │   ├── data_generator.py               # 80-patient clinical & 900 radiomic dataset synthesis
