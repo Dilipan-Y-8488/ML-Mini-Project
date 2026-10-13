@@ -1,6 +1,6 @@
-Threshold_Days,Threshold_Label,High_Risk_Count,Low_Risk_Count,Balanced_Accuracy,Fold_Std
-240,240 days,18,62,0.64,0.172
-270,270 days,24,56,0.74,0.105
-300,300 days,24,56,0.74,0.105
-330,330 days,25,55,0.74,0.142
-360,360 days,26,54,0.72,0.166
+Threshold_Days,Threshold_Label,High_Risk_Count,Low_Risk_Count,Balanced_Accuracy,Fold_Std,Selection_Status
+240,240 days,18,62,0.64,0.172,Suboptimal
+270,270 days,24,56,0.74,0.105,"Optimal (Tied at 0.74; lowest std 0.105, smallest threshold 270d)"
+300,300 days,24,56,0.74,0.105,Tied at 0.74 (std=0.105; discarded in favor of smaller 270d cutoff)
+330,330 days,25,55,0.74,0.142,Tied at 0.74 (std=0.142; discarded due to higher fold variance)
+360,360 days,26,54,0.72,0.166,Suboptimal

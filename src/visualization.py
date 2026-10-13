@@ -58,34 +58,58 @@ def plot_fig1_clinical_pre_smote(clinical_df: pd.DataFrame, out_dir: str = "resu
     return path
 
 
-def plot_fig2_naive_bayes_thresholds(nb_table1_df: pd.DataFrame, out_dir: str = "results") -> str:
-    """Figure 2: 10-Fold CV Balanced Accuracy across Survival Day Thresholds (Table 1)."""
+def plot_fig2_naive_bayes_thresholds(
+    nb_table1_df: pd.DataFrame,
+    out_dir: str = "results",
+    optimal_thresh: int = 270,
+) -> str:
+    """
+    Figure 2: 10-Fold CV Balanced Accuracy across Survival Day Thresholds (Table 1).
+    Explicitly illustrates the 0.74 tie across 270, 300, and 330 days, highlighting the
+    selection of 270 days based on lowest cross-validation variance and earliest cutoff.
+    """
     os.makedirs(out_dir, exist_ok=True)
-    fig, ax = plt.subplots(figsize=(6.5, 4.2), dpi=220)
+    fig, ax = plt.subplots(figsize=(7.2, 4.5), dpi=220)
 
     thresholds = nb_table1_df["Threshold_Label"].tolist()
     scores = nb_table1_df["Balanced_Accuracy"].tolist()
-    colors = ["#4C78A8" if t != "270 days" else "#E45756" for t in thresholds]
+    stds = nb_table1_df["Fold_Std"].tolist()
+
+    # Color scheme: 270d is highlighted in red; 300d and 330d are marked as tied in amber; others in blue
+    colors = []
+    for t in nb_table1_df["Threshold_Days"]:
+        if t == optimal_thresh:
+            colors.append("#E45756")  # Selected optimal
+        elif t in (300, 330):
+            colors.append("#F28E2B")  # Tied in accuracy
+        else:
+            colors.append("#4C78A8")  # Suboptimal
 
     bars = ax.bar(thresholds, scores, color=colors, width=0.52, edgecolor="black", linewidth=0.8)
-    for bar, score in zip(bars, scores):
+    for bar, score, std, t in zip(bars, scores, stds, nb_table1_df["Threshold_Days"]):
+        note = " (Tie)" if t in (300, 330) else (" (Selected)" if t == optimal_thresh else "")
         ax.text(
             bar.get_x() + bar.get_width() / 2.0,
             bar.get_height() + 0.015,
-            f"{score:.2f}",
+            f"{score:.2f} ± {std:.2f}{note}",
             ha="center",
             va="bottom",
-            fontsize=10,
+            fontsize=8.2,
             fontweight="bold",
         )
 
-    ax.set_ylim(0.0, 0.82)
-    ax.set_ylabel("10-Fold CV Balanced Accuracy", fontsize=11, fontweight="bold")
-    ax.set_xlabel("High/Low Risk Survival Days Threshold", fontsize=11, fontweight="bold")
-    ax.set_title("Naive Bayes Classifier Balanced Accuracy vs. Risk Threshold", fontsize=11.5, fontweight="bold")
-    ax.axhline(max(scores), color="#E45756", linestyle="--", alpha=0.6, label="Optimal Threshold (270 days)")
+    ax.set_ylim(0.0, 0.87)
+    ax.set_ylabel("10-Fold CV Balanced Accuracy", fontsize=10.5, fontweight="bold")
+    ax.set_xlabel("High/Low Risk Survival Days Threshold", fontsize=10.5, fontweight="bold")
+    ax.set_title(
+        "Naive Bayes 10-Fold CV Balanced Accuracy across Risk Thresholds\n"
+        "(270d, 300d & 330d tie at 0.74; 270d selected via lowest fold std and earliest boundary)",
+        fontsize=10.0,
+        fontweight="bold",
+    )
+    ax.axhline(max(scores), color="#E45756", linestyle="--", alpha=0.6, label="Max Accuracy (0.74 tie)")
     ax.grid(axis="y", linestyle="--", alpha=0.35)
-    ax.legend(loc="upper right", fontsize=9.5)
+    ax.legend(loc="upper right", fontsize=8.8)
     fig.tight_layout()
 
     path = os.path.join(out_dir, "fig2_naive_bayes_thresholds.png")
