@@ -6,6 +6,11 @@
 
 ---
 
+## Dataset Disclaimer
+
+> [!IMPORTANT]
+> **Synthetic Data Notice:** The original Stanford Cancer Center dataset evaluated in Jamalian (2020) is proprietary and protected under a Non-Disclosure Agreement (NDA). All patient records in `data/clinical_data.csv` and `data/radiomic_data.csv` are **synthetic**, generated via `src/data_generator.py` to replicate the structure, feature distributions, and dimensionality of the paper's cohort (80 synthetic patients, 12 clinical variables, 900 radiomic features). These records are **NOT real patient data**. Consequently, results obtained here are **NOT directly comparable** to the paper's published metrics and must not be interpreted as outperforming the original study.
+
 ## Team & Work Split
 
 | Team Member | SRN | Primary Responsibilities & Code Modules |
@@ -19,7 +24,7 @@
 
 Pancreatic ductal adenocarcinoma is rarely detected at early resectable stages. For patients with borderline resectable or locally advanced tumors, accurate survival prognosis is vital for personalizing treatment plans (e.g., assessing chemotherapy timing and radiation fractionation).
 
-This project implements an end-to-end multimodal machine learning pipeline on an 80-patient cohort combining **12 clinical variables** and **900 quantitative 3D MRI radiomic features** (PyRadiomics/QFIP extraction):
+This project implements an end-to-end multimodal machine learning pipeline on a synthetic 80-patient cohort combining **12 clinical variables** and **900 simulated quantitative 3D MRI radiomic features** (mimicking PyRadiomics/QFIP feature extraction):
 
 1. **Risk Threshold Selection (Naive Bayes):** Discretizes 5 clinical features (`Stage_Grouping`, `Chemotherapy_Time`, `Tumor_Width_cm`, `NCCN_Resectability`, `Radiation_Therapy`) and trains a Multinomial Naive Bayes model with Laplace smoothing over 240, 270, 300, 330, and 360-day survival thresholds. The 270-day threshold achieved the highest 10-fold cross-validation balanced accuracy (0.74).
 2. **Class Imbalance Augmentation (SMOTE):** Using the 270-day boundary, 5-nearest-neighbor SMOTE is applied across the 912-dimensional joint feature space to synthesize high-risk Stage IIB and Stage III cases, expanding the cohort from 80 to 112 patients.
@@ -47,8 +52,9 @@ Mini-Project/
 │   ├── survival_models.py              # Radiomics pruning, CoxPH regression & Kaplan-Meier
 │   └── visualization.py                # Plotting utilities for Figures 1 to 6
 ├── data/
-│   ├── clinical_data.csv               # 80-patient clinical features and survival records
-│   └── radiomic_data.csv               # 80x900 PyRadiomics feature matrix
+│   ├── README.md                       # Documentation of synthetic generation methodology
+│   ├── clinical_data.csv               # Synthetic 80-patient clinical features and survival records
+│   └── radiomic_data.csv               # Synthetic 80x900 radiomic feature matrix (simulated)
 └── results/
     ├── fig1_clinical_pre_smote.png     # Figure 1: Clinical scatter by cancer stage (pre-SMOTE)
     ├── fig2_naive_bayes_thresholds.png # Figure 2: Naive Bayes 10-fold CV balanced accuracy
@@ -106,7 +112,7 @@ python demo_cli.py
 
 ### Table 1: Naive Bayes 10-Fold CV Balanced Accuracy across Risk Thresholds
 
-| Survival Threshold | High-Risk ($y=1$) | Low-Risk ($y=0$) | 10-Fold CV Balanced Accuracy | Paper Reference |
+| Survival Threshold | High-Risk ($y=1$) | Low-Risk ($y=0$) | 10-Fold CV Balanced Accuracy | Paper (real data, for context only) |
 | :--- | :---: | :---: | :---: | :---: |
 | 240 days | 18 | 62 | 0.64 ± 0.17 | 0.53 |
 | **270 days (Optimal)** | **24** | **56** | **0.74 ± 0.11** | **0.69** |
@@ -116,7 +122,7 @@ python demo_cli.py
 
 ### Table 2: Cox Proportional Hazards 10-Fold CV Concordance Index (C-Index)
 
-| Model Feature Set | Number of Features | 10-Fold CV C-Index | Paper Reference C-Index |
+| Model Feature Set | Number of Features | 10-Fold CV C-Index | Paper (real data, for context only) |
 | :--- | :---: | :---: | :---: |
 | **Clinical Features** | 12 | **0.74 ± 0.10** | 0.67 |
 | **Radiomic Features (Pruned)** | 490 | **0.83 ± 0.08** | 0.76 |

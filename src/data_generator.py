@@ -1,17 +1,32 @@
 """
-Synthetic Stanford QFIP Pancreatic Cancer Clinical & Radiomic Dataset Generator
+Synthetic Pancreatic Cancer Clinical & Radiomic Dataset Generator (UE24CS352A)
 ================================================================================
-Reconstructs the 80-patient cohort described in Arash Jamalian (Stanford CS229):
-"Pancreatic cancer prognosis using clinical and radiomic data".
+DISCLAIMER:
+The original Stanford Cancer Center dataset studied in Arash Jamalian (CS229,
+Stanford University, 2020) is protected under a Non-Disclosure Agreement (NDA)
+and cannot be publicly distributed.
 
-Since the original Stanford Cancer Center dataset is under NDA, this module
-generates a realistic, statistically faithful 80-patient dataset containing:
-  - 12 clinical features (Stage Grouping, Chemotherapy Time, Radiation Therapy,
-    NCCN Resectability, Tumor Location, Primary Tumor T-stage, KPS, Gender, and
-    4 tumor dimension/volume metrics)
-  - 900 PyRadiomics/QFIP features (first-order, 2D/3D shape, GLCM, GLSZM, GLRLM,
-    wavelet, and LoG-sigma filtered features)
-  - Survival days (120 to 1320 days) and right-censoring indicators.
+This module programmatically generates a SYNTHETIC dataset designed to mirror
+the structural dimensionality and statistical properties of the reference study:
+  - 80 synthetic patients (24 high-risk < 270d, 56 low-risk >= 270d)
+  - 12 clinical variables (stage, treatments, performance status, tumor sizes)
+  - 900 radiomic features (simulating PyRadiomics/QFIP extraction with 3D
+    wavelets, Laplacian-of-Gaussian, GLCM, GLSZM, GLRLM textures)
+  - Continuous survival days and right-censoring indicators (~17.5% censored).
+
+Simulation Details:
+  - Seed: Deterministic via numpy.random.default_rng(seed=42).
+  - Survival time (T): High-risk simulated as Uniform(135, 266) days;
+    Low-risk simulated as Gamma(shape=2.4, scale=145.0) + 272 days.
+  - Latent hazard (eta): Standardized negative log-survival, driving
+    clinical categorical distributions and radiomic feature matrices.
+  - Collinearity / Pruning: 410 radiomic features are generated from 10 shared
+    latent anchor variables with minimal noise (sigma=0.012), causing high
+    standard errors (SE > 1.0) under Cox regression to simulate the collinear
+    redundancy observed in the original study.
+  - Disclaimer: These synthetic data are NOT real patient records. Metrics
+    obtained on this dataset are for educational demonstration and cannot be
+    directly compared to the published paper's results.
 """
 
 import os
