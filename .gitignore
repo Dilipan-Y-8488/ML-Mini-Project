@@ -17,3 +17,10 @@ Thumbs.db
 # Private / copyrighted assignment documents
 Jamalian.pdf
 Guidelines and Instructions_Mini Project Assignment.pdf
+
+# Logs, scratch and checkpoints
+*.log
+*.tmp
+scratch/
+.ipynb_checkpoints/
+
