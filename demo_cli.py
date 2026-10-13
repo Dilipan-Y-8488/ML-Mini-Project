@@ -1,14 +1,9 @@
 """
-Interactive CLI Live Demo Script
-================================
-Course: UE24CS352A - Machine Learning Mini-Project
-Project: Pancreatic Cancer Prognosis using Clinical & Radiomic Data
-
-Provides an instant terminal-based demonstration of:
-  1. Cohort summary & Member 1 Naive Bayes 10-Fold CV Threshold Table
-  2. Member 1 SMOTE Minority Augmentation summary
-  3. Member 2 High-Variance Radiomic Pruning (900 -> 490) & 10-Fold CV CoxPH C-Index Table
-  4. Live interactive patient risk & survival curve prediction for sample patients!
+Command-line demo script for evaluation review.
+Demonstrates:
+  1. Naive Bayes threshold selection and 5-NN SMOTE augmentation (Dilipan Y)
+  2. Radiomic feature pruning (900 -> 490) and regularized CoxPH evaluation (Sai Hemanth)
+  3. Interactive survival predictions for sample patients
 """
 
 import json

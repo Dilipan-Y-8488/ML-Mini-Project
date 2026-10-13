@@ -36,7 +36,7 @@ st.set_page_config(
 
 
 @st.cache_data
-def load_all_project_artifacts():
+def load_data_and_results():
     if not os.path.exists("data/clinical_data.csv") or not os.path.exists("results/metrics_summary.json"):
         from main import run_pipeline
         run_pipeline()
@@ -57,7 +57,7 @@ def load_all_project_artifacts():
 
 def main():
     clinical_df, radiomic_df, aug_clin, aug_rad, table1_df, table2_df, top15_df, summary = (
-        load_all_project_artifacts()
+        load_data_and_results()
     )
 
     st.title("🧬 Pancreatic Cancer Prognosis using Clinical & Radiomic Data")
